@@ -2,14 +2,13 @@
 Database models.
 """
 
-
 from django.db import models
-from django.contrib.auth.modles import (
-    AbstartBaseUser,
-    BaseUserManger,
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
     PermissionsMixin,
 )
-class UserManager(BaseUserManger):
+class UserManager(BaseUserManager):
     """Manager for users."""
 
     def create_user(self,email, password=None, **extra_field):
@@ -20,11 +19,14 @@ class UserManager(BaseUserManger):
 
         return user
 
-class User(AbstartBaseUser,PermissionsMixin):
+
+class User(AbstractBaseUser,PermissionsMixin):
     """User in the system"""
     email = models.EmailField(max_length=255, unique = True)
     name= models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(deafult=False)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UserManager() #assign user manager to custom user class
 
     USERNAME_FIELD = 'email'
