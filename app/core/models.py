@@ -13,9 +13,22 @@ class UserManager(BaseUserManager):
 
     def create_user(self,email, password=None, **extra_field):
         """Create, save and return a new user."""
-        user = self.model(email=email, **extra_field)
+        if not email:
+            raise ValueError("User must have email address")
+        user = self.model(email=self.normalize_email(email), **extra_field)
         user.set_password(password)
         user.save(using=self._db)
+
+        return user
+
+    def create_superuser(self,email,password):
+        """Create, save and return a new super user."""
+        if not email or not password:
+            raise ValueError("User must have email address and password")
+        user = self.create_user(email,password)
+        user.is_staff= True
+        user.is_superuser=True
+        user.save(using = self._db)
 
         return user
 
@@ -26,7 +39,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     name= models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
     objects = UserManager() #assign user manager to custom user class
 
     USERNAME_FIELD = 'email'
