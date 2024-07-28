@@ -46,3 +46,5 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Recipe)
+admin.site.register(models.Tag) #make sure the Tag field is editable through the admin page
+admin.site.register(models.Ingridient)
